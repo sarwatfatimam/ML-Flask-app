@@ -6,26 +6,18 @@ Created on Oct 12, 2018
 '''
 
 import requests, json
-from model_functions import clean_data
-from sklearn.model_selection import train_test_split
-import pandas as pd
 
+# Defining the base url to be used for sending the request 
 BASE_URL = 'http://127.0.0.1:5000/api/predict/'
-url = '[http://127.0.0.1:5000/api/makecalc/](http://127.0.0.1:5000/api/makecalc/)'
 
 def request():
     
-    df = pd.read_csv("ks-projects-201801.csv")
-    
-    X, y = clean_data(df)
-    
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
-    
-    X_test = X_test.to_json(orient='index')
-    
-    train_data = {'X_test': X_test, 'y_test': y_test}
-    
-    json_data = json.dumps(train_data)
+    # loading the json file which contains the 20% of testing dataset
+    datafile = open ('test_data.json').read()
+    test_data = json.loads(datafile)     
+
+    # Sending the json data in the request 
+    json_data = json.dumps(test_data)
     headers = {'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
     response = requests.post(BASE_URL, data=json_data, headers=headers)
     
